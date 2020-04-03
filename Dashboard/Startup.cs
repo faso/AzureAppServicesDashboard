@@ -13,6 +13,7 @@ using Dashboard.Data;
 using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
 using Microsoft.Azure.Management.Fluent;
 using Microsoft.Azure.Management.ResourceManager.Fluent;
+using Dashboard.Options;
 
 namespace Dashboard
 {
@@ -31,6 +32,11 @@ namespace Dashboard
         {
             services.AddRazorPages();
             services.AddServerSideBlazor();
+
+            services.Configure<DomainOptions>(o =>
+            {
+                o.Name = Configuration["Azure:DomainName"];
+            });
 
             services.AddSingleton(s => {
                 var creds = new AzureCredentialsFactory().FromServicePrincipal(Configuration["Azure:ClientId"], Configuration["Azure:ClientSecret"], Configuration["Azure:TenantId"], AzureEnvironment.AzureGlobalCloud);

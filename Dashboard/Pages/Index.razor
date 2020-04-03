@@ -1,7 +1,10 @@
 ﻿@using Microsoft.Azure.Management.Fluent;
 @using Microsoft.Azure.Management.AppService.Fluent;
+@using Microsoft.Extensions.Options;
+@using Dashboard.Options; 
 @page "/"
 @inject IAzure azure
+@inject IOptions<DomainOptions> domainOptions
 
 <nav class="navbar is-white">
     <div class="container">
@@ -52,12 +55,12 @@
             </div>
             <div class="columns">
                 <div class="column">
-                    <WebAppCard ParentName="@null" IsProduction="@true" App="@app.Key" Domain="AteaCloudCO.onmicrosoft.com" Subscription="f1c4734c-15d6-46b1-8942-65c8a079c5d4" />
+                    <WebAppCard ParentName="@null" IsProduction="@true" App="@app.Key" Domain="@domainOptions.Value.Name" Subscription="f1c4734c-15d6-46b1-8942-65c8a079c5d4" />
                 </div>
                 @foreach (var slot in app.Value)
                 {
                     <div class="column">
-                        <WebAppCard ParentName="@app.Key.Name" IsProduction="@false" App="@slot" Domain="AteaCloudCO.onmicrosoft.com" Subscription="f1c4734c-15d6-46b1-8942-65c8a079c5d4" />
+                        <WebAppCard ParentName="@app.Key.Name" IsProduction="@false" App="@slot" Domain="@domainOptions.Value.Name" Subscription="f1c4734c-15d6-46b1-8942-65c8a079c5d4" />
                     </div>
                 }
             </div>
