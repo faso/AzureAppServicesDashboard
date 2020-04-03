@@ -9,8 +9,8 @@
 - [x] Show App Settings and Connection Strings
 - [x] Switch between Resource Groups
 - [ ] Latest deployment info
-- [ ] Link hostnames
-- [ ] Restart apps
+- [x] Link hostnames
+- [x] Restart apps
 - [ ] Auto-refresh in the background
 - [ ] Function App support
 - [ ] Show configuration
