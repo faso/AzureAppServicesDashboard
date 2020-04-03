@@ -13,6 +13,8 @@
 - [ ] Restart apps
 - [ ] Auto-refresh in the background
 - [ ] Function App support
+- [ ] Show configuration
+- [ ] Show CORS settings
 
 ## How to run
 
