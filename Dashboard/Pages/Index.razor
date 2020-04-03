@@ -54,7 +54,7 @@
                 <div class="level-left"><h1 class="level-item is-size-2">@app.Key.Name</h1></div>
             </div>
             <div class="columns">
-                <div class="column">
+                <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
                     <WebAppCard ParentName="@null" IsProduction="@true" App="@app.Key" Domain="@domainOptions.Value.Name" Subscription="f1c4734c-15d6-46b1-8942-65c8a079c5d4" />
                 </div>
                 @foreach (var slot in app.Value)
@@ -81,16 +81,16 @@
     private bool _loading = true;
     private string _currentRG = "";
     private List<string> _RGs = new List<string>();
-    private System.Threading.Timer _timer;
+    //private System.Threading.Timer _timer;
 
     protected override async Task OnInitializedAsync()
     {
         await ReadWebApps(true);
 
-        _timer = new System.Threading.Timer(async (_) =>
-        await ReadWebApps(),
-        null, TimeSpan.Zero,
-            TimeSpan.FromSeconds(10));
+        //_timer = new System.Threading.Timer(async (_) =>
+        //await ReadWebApps(),
+        //null, TimeSpan.Zero,
+        //    TimeSpan.FromSeconds(10));
 
         await base.OnInitializedAsync();
     }
