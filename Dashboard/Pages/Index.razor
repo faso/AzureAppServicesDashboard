@@ -81,17 +81,10 @@
     private bool _loading = true;
     private string _currentRG = "";
     private List<string> _RGs = new List<string>();
-    //private System.Threading.Timer _timer;
 
     protected override async Task OnInitializedAsync()
     {
         await ReadWebApps(true);
-
-        //_timer = new System.Threading.Timer(async (_) =>
-        //await ReadWebApps(),
-        //null, TimeSpan.Zero,
-        //    TimeSpan.FromSeconds(10));
-
         await base.OnInitializedAsync();
     }
 
