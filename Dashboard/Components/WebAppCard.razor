@@ -1,0 +1,110 @@
+﻿@using Microsoft.Azure.Management.AppService.Fluent;
+@using Microsoft.Azure.Management.ResourceManager.Fluent;
+
+<div class="card">
+    <header class="card-header">
+        <p class="card-header-title">
+            @(IsProduction ? "Production" : App.Name)
+        </p>
+        <a href="@_appLink" class="card-header-icon" aria-label="more options" target="_blank">
+            <span class="icon">
+                <i class="fas fa-external-link-alt" aria-hidden="true"></i>
+            </span>
+        </a>
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <p>State:<span class="@_stateClass"> <b>@App.State</b></span></p>
+        </div>
+    </div>
+    <footer class="card-footer">
+        <a href="@_kuduLink" class="card-footer-item" target="_blank">
+            <span class="icon">
+                <i class="fas fa-wrench"></i>
+            </span> Kudu
+        </a>
+        <a href="#" class="card-footer-item" @onclick="o => _modalActive = true">AppSettings</a>
+        <a href="#" class="card-footer-item" @onclick="o => App.Start()">
+            <span class="icon has-text-success">
+                <i class="fas fa-play" aria-hidden="true"></i>
+            </span>
+        </a>
+        <a href="#" class="card-footer-item" @onclick="o => App.Stop()">
+            <span class="icon has-text-danger">
+                <i class="fas fa-stop" aria-hidden="true"></i>
+            </span>
+        </a>
+    </footer>
+</div>
+
+<div class="modal @(_modalActive ? "is-active" : "")">
+    <div class="modal-background"></div>
+    <div class="modal-content">
+        <div class="card">
+            <div class="card-content">
+                <div class="content">
+                    <div class="control">
+                        <textarea rows="30" cols="400" class="textarea" readonly>@_appSettings</textarea>
+                    </div>
+                </div>
+            </div>
+            <button class="modal-close is-large" aria-label="close" @onclick="o => _modalActive = false"></button>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public IWebAppBase App { get; set; }
+
+    [Parameter]
+    public string Subscription { get; set; }
+
+    [Parameter]
+    public string Domain { get; set; }
+
+    [Parameter]
+    public bool IsProduction { get; set; }
+
+    [Parameter]
+    public string ParentName { get; set; }
+
+    private string _appSettings;
+    private string _appLink;
+    private string _kuduLink;
+    private string _stateClass;
+    private bool _modalActive = false;
+    //private IDeployment _lastDeployment = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if (App.State == "Running")
+            _stateClass = "has-text-success";
+        else if (App.State == "Stopped")
+            _stateClass = "has-text-danger";
+        else
+            _stateClass = String.Empty;
+
+        //_lastDeployment = (await App.Manager.ResourceManager.Deployments.ListAsync()).OrderByDescending(o => o.Timestamp).FirstOrDefault();
+
+        _appLink = $"https://portal.azure.com/#@{Domain}/resource/subscriptions/{Subscription}/resourceGroups/{App.ResourceGroupName}/providers/Microsoft.Web/sites/";
+        if (!IsProduction)
+            _appLink += $"{ParentName}/slots/{App.Name}";
+        else
+            _appLink += App.Name;
+        _appLink += "/appServices";
+
+        _kuduLink = $"https://{(IsProduction ? App.Name : ParentName + "-" + App.Name)}.scm.azurewebsites.net";
+
+        var options = new JsonSerializerOptions
+        {
+            WriteIndented = true,
+        };
+
+        _appSettings = JsonSerializer.Serialize(await App.GetAppSettingsAsync(), options);
+        _appSettings += "\n\n";
+        _appSettings += JsonSerializer.Serialize(await App.GetConnectionStringsAsync(), options);
+
+        await base.OnParametersSetAsync();
+    }
+}

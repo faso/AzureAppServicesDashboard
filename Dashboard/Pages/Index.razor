@@ -1,0 +1,122 @@
+﻿@using Microsoft.Azure.Management.Fluent;
+@using Microsoft.Azure.Management.AppService.Fluent;
+@page "/"
+@inject IAzure azure
+
+<nav class="navbar is-white">
+    <div class="container">
+        <div class="navbar-brand">
+            <a class="navbar-item brand-text" href="#">
+                My Cool Project
+            </a>
+        </div>
+        <div id="navMenu" class="navbar-menu">
+            <div class="navbar-start">
+
+            </div>
+
+            <div class="navbar-end">
+                <div class="navbar-end">
+                    <div class="navbar-item is-size-6">Resource group:</div>
+                    <div class="select navbar-item" style="margin-top: 11px;">
+                        <select @bind="_currentRG">
+                            @foreach (var rg in _RGs)
+                            {
+                                <option>@rg</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="navbar-item" style="margin-right: 5px;">
+                        <button class="button is-success" disabled="@_loading" @onclick="async o => { await ReadWebApps(); }">
+                            <span class="icon">
+                                <i class="fas fa-sync"></i>
+                            </span>
+                            <span>Refresh</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+    @if (!_loading)
+    {
+        @foreach (var app in WebApps[_currentRG])
+        {
+            <div class="level">
+                <div class="level-left"><h1 class="level-item is-size-2">@app.Key.Name</h1></div>
+            </div>
+            <div class="columns">
+                <div class="column">
+                    <WebAppCard ParentName="@null" IsProduction="@true" App="@app.Key" Domain="AteaCloudCO.onmicrosoft.com" Subscription="f1c4734c-15d6-46b1-8942-65c8a079c5d4" />
+                </div>
+                @foreach (var slot in app.Value)
+                {
+                    <div class="column">
+                        <WebAppCard ParentName="@app.Key.Name" IsProduction="@false" App="@slot" Domain="AteaCloudCO.onmicrosoft.com" Subscription="f1c4734c-15d6-46b1-8942-65c8a079c5d4" />
+                    </div>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <nav class="level">
+            <div class="level-item">
+                <progress class="progress is-small is-primary" max="100">15%</progress>
+            </div>
+        </nav>
+    }
+</div>
+
+@code {
+    private IDictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>> WebApps = new Dictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>>();
+    private bool _loading = true;
+    private string _currentRG = "";
+    private List<string> _RGs = new List<string>();
+    private System.Threading.Timer _timer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ReadWebApps(true);
+
+        _timer = new System.Threading.Timer(async (_) =>
+        await ReadWebApps(),
+        null, TimeSpan.Zero,
+            TimeSpan.FromSeconds(10));
+
+        await base.OnInitializedAsync();
+    }
+
+    private async Task ReadWebApps(bool initial = false)
+    {
+        _loading = true;
+        WebApps = new Dictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>>();
+
+        var apps = await azure.AppServices.WebApps.ListAsync();
+
+        foreach (var app in apps)
+        {
+            var slots = await app.DeploymentSlots.ListAsync();
+
+            if (!WebApps.ContainsKey(app.ResourceGroupName))
+                WebApps[app.ResourceGroupName] = new Dictionary<IWebAppBase, IEnumerable<IWebAppBase>>();
+
+            WebApps[app.ResourceGroupName][app] = slots.Cast<IWebAppBase>();
+        }
+
+        _RGs = WebApps.Select(o => o.Key).ToList();
+
+        if (initial)
+            _currentRG = _RGs.First();
+
+        _loading = false;
+
+        if (!initial)
+            await InvokeAsync(StateHasChanged);
+    }
+}
