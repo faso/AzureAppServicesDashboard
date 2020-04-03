@@ -15,6 +15,7 @@
 - [ ] Function App support
 - [ ] Show configuration
 - [ ] Show CORS settings
+- [ ] Show WebJobs
 
 ## How to run
 
