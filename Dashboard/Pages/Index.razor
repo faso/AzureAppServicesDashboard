@@ -94,7 +94,6 @@
         WebApps = new Dictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>>();
 
         var apps = await azure.AppServices.WebApps.ListAsync();
-
         foreach (var app in apps)
         {
             var slots = await app.DeploymentSlots.ListAsync();
@@ -104,6 +103,18 @@
 
             WebApps[app.ResourceGroupName][app] = slots.Cast<IWebAppBase>();
         }
+
+        var functions = await azure.AppServices.FunctionApps.ListAsync();
+        foreach (var function in functions)
+        {
+            var slots = await function.DeploymentSlots.ListAsync();
+
+            if (!WebApps.ContainsKey(function.ResourceGroupName))
+                WebApps[function.ResourceGroupName] = new Dictionary<IWebAppBase, IEnumerable<IWebAppBase>>();
+
+            WebApps[function.ResourceGroupName][function] = slots.Cast<IWebAppBase>();
+        }
+
 
         _RGs = WebApps.Select(o => o.Key).ToList();
 
