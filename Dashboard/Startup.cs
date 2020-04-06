@@ -29,6 +29,7 @@ namespace Dashboard
             services.Configure<DomainOptions>(o =>
             {
                 o.Name = Configuration["Azure:DomainName"];
+                o.Subscription = Configuration["Azure:SubscriptionId"];
             });
 
             services.AddSingleton(s => {
