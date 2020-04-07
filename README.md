@@ -13,9 +13,6 @@
 - [x] Restart apps
 - [ ] Auto-refresh in the background
 - [x] Function App support
-- [ ] Show configuration
-- [ ] Show CORS settings
-- [ ] Show WebJobs
 
 ## How to run
 
