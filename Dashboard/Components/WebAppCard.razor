@@ -17,10 +17,10 @@
             </div>
             <div class="dropdown-menu" id="dropdown-menu" role="menu" @onblur="_ => _toolsDropdownActive = false">
                 <div class="dropdown-content">
-                    <a href="@_appLink" class="dropdown-item">
+                    <a href="@_appLink" target="_blank" class="dropdown-item">
                         Azure page
                     </a>
-                    <a href="@_kuduLink" class="dropdown-item">
+                    <a href="@_kuduLink" target="_blank" class="dropdown-item">
                         Kudu
                     </a>
                     <a href="#" @onclick="o => { _appSettingsModalActive = true; _toolsDropdownActive = false; }" class="dropdown-item">
