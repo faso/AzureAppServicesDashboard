@@ -13,6 +13,7 @@
 - [x] Restart apps
 - [ ] Auto-refresh in the background
 - [x] Function App support
+- [ ] Dark mode
 
 ## How to run
 
