@@ -1,7 +1,7 @@
 ﻿@using Microsoft.Azure.Management.Fluent;
 @using Microsoft.Azure.Management.AppService.Fluent;
 @using Microsoft.Extensions.Options;
-@using Dashboard.Options; 
+@using Dashboard.Options;
 @page "/"
 @inject IAzure azure
 @inject IOptions<DomainOptions> domainOptions
@@ -51,7 +51,25 @@
         @foreach (var app in WebApps[_currentRG])
         {
             <div class="level">
-                <div class="level-left"><h1 class="level-item is-size-2">@app.Key.Name</h1></div>
+                <div class="level-left"><img class="app-logo" src="/images/webapp-logo.png"><h1 class="level-item is-size-4">@app.Key.Name</h1></div>
+            </div>
+            <div class="columns">
+                <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+                    <WebAppCard ParentName="@null" IsProduction="@true" App="@app.Key" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
+                </div>
+                @foreach (var slot in app.Value)
+                {
+                    <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+                        <WebAppCard ParentName="@app.Key.Name" IsProduction="@false" App="@slot" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
+                    </div>
+                }
+            </div>
+        }
+
+        @foreach (var app in Functions[_currentRG])
+        {
+            <div class="level">
+                <div class="level-left"><img class="function-logo" src="/images/function-logo.png"><h1 class="level-item is-size-4">@app.Key.Name</h1></div>
             </div>
             <div class="columns">
                 <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
@@ -78,6 +96,7 @@
 
 @code {
     private IDictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>> WebApps = new Dictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>>();
+    private IDictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>> Functions = new Dictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>>();
     private bool _loading = true;
     private string _currentRG = "";
     private List<string> _RGs = new List<string>();
@@ -92,9 +111,11 @@
     {
         _loading = true;
         WebApps = new Dictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>>();
+        Functions = new Dictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>>();
 
         var apps = await azure.AppServices.WebApps.ListAsync();
-        foreach (var app in apps)
+        var list = apps.OrderBy(o => o.Name).ToList();
+        foreach (var app in list)
         {
             var slots = await app.DeploymentSlots.ListAsync();
 
@@ -105,16 +126,16 @@
         }
 
         var functions = await azure.AppServices.FunctionApps.ListAsync();
-        foreach (var function in functions)
+        var fnList = functions.OrderBy(o => o.Name).ToList();
+        foreach (var function in fnList)
         {
             var slots = await function.DeploymentSlots.ListAsync();
 
-            if (!WebApps.ContainsKey(function.ResourceGroupName))
-                WebApps[function.ResourceGroupName] = new Dictionary<IWebAppBase, IEnumerable<IWebAppBase>>();
+            if (!Functions.ContainsKey(function.ResourceGroupName))
+                Functions[function.ResourceGroupName] = new Dictionary<IWebAppBase, IEnumerable<IWebAppBase>>();
 
-            WebApps[function.ResourceGroupName][function] = slots.Cast<IWebAppBase>();
+            Functions[function.ResourceGroupName][function] = slots.Cast<IWebAppBase>();
         }
-
 
         _RGs = WebApps.Select(o => o.Key).ToList();
 

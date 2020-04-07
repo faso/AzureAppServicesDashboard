@@ -5,15 +5,28 @@
         <p class="card-header-title">
             @(IsProduction ? "Production" : App.Name)
         </p>
-
-        <div class="dropdown @(_toolsDropdownActive ? "is-active" : "")">
+    </header>
+    <div class="card-content">
+        <div class="content">
+            <p>State:<span class="@_stateClass"> <b>@App.State</b></span></p>
+            <p>
+                Hostnames:
+                @foreach (var host in App.HostNames)
+                {
+                    <a href='@($"http://{host}")' target="_blank">@host</a><br />
+                }
+            </p>
+        </div>
+    </div>
+    <footer class="card-footer">
+        <div class="card-footer-item dropdown @(_toolsDropdownActive ? "is-active" : "")">
             <div class="dropdown-trigger" @onclick="_ => _toolsDropdownActive = !_toolsDropdownActive">
-                <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                <div aria-haspopup="true" aria-controls="dropdown-menu">
                     <span>Tools</span>
                     <span class="icon is-small">
                         <i class="fas fa-angle-down" aria-hidden="true"></i>
                     </span>
-                </button>
+                </div>
             </div>
             <div class="dropdown-menu" id="dropdown-menu" role="menu" @onblur="_ => _toolsDropdownActive = false">
                 <div class="dropdown-content">
@@ -29,20 +42,7 @@
                 </div>
             </div>
         </div>
-    </header>
-    <div class="card-content">
-        <div class="content">
-            <p>State:<span class="@_stateClass"> <b>@App.State</b></span></p>
-            <p>
-                Hostnames:
-                @foreach (var host in App.HostNames)
-                {
-                    <a href='@($"http://{host}")' target="_blank">@host</a><br />
-                }
-            </p>
-        </div>
-    </div>
-    <footer class="card-footer">
+
         @if (App.State == "Stopped")
         {
             <a href="#" class="card-footer-item" @onclick="async _ =>await App.StartAsync()">

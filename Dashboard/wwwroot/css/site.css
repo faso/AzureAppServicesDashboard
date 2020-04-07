@@ -95,3 +95,21 @@ nav.navbar {
     max-height: 250px;
     overflow-y: scroll;
 }
+
+.app-logo {
+    margin-top: 3px;
+    margin-right: 3px;
+    height: 28px;
+    width: 28px;
+}
+
+.function-logo {
+    margin-top: 3px;
+    margin-right: 3px;
+    height: 30px;
+    width: 30px;
+}
+
+.dropdown-trigger {
+    cursor: pointer;
+}
