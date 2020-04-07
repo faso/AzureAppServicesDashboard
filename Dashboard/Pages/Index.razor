@@ -10,7 +10,7 @@
     <div class="container">
         <div class="navbar-brand">
             <a class="navbar-item brand-text" href="#">
-                My Cool Project
+                @_currentRG
             </a>
         </div>
         <div id="navMenu" class="navbar-menu">
@@ -59,7 +59,7 @@
                 </div>
                 @foreach (var slot in app.Value)
                 {
-                    <div class="column">
+                    <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
                         <WebAppCard ParentName="@app.Key.Name" IsProduction="@false" App="@slot" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
                     </div>
                 }
