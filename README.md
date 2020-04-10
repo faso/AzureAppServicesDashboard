@@ -1,5 +1,7 @@
 # Azure App Services Dashboard
 
+![](https://github.com/faso/AzureAppServicesDashboard/workflows/dotnetcore/badge.svg)
+
 ## Features & Roadmap
 - [x] List apps
 - [x] List app slots
