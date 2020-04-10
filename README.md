@@ -1,6 +1,6 @@
 # Azure App Services Dashboard
 
-![](https://github.com/faso/AzureAppServicesDashboard/workflows/dotnetcore/badge.svg)
+![.NET Core](https://github.com/faso/AzureAppServicesDashboard/workflows/.NET%20Core/badge.svg)
 
 ## Features & Roadmap
 - [x] List apps
