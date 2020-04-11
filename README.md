@@ -1,5 +1,7 @@
 # Azure App Services Dashboard
 
+![.NET Core](https://github.com/faso/AzureAppServicesDashboard/workflows/.NET%20Core/badge.svg)
+
 ## Features & Roadmap
 - [x] List apps
 - [x] List app slots
@@ -13,9 +15,7 @@
 - [x] Restart apps
 - [ ] Auto-refresh in the background
 - [x] Function App support
-- [ ] Show configuration
-- [ ] Show CORS settings
-- [ ] Show WebJobs
+- [ ] Dark mode
 
 ## How to run
 
