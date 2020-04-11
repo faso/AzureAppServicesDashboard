@@ -88,7 +88,7 @@
     {
         <nav class="level">
             <div class="level-item">
-                <progress class="progress is-small is-primary" max="100">15%</progress>
+                <progress class="progress is-small is-primary" max="100">15%</progress> @_loadedCount/@_appCount
             </div>
         </nav>
     }
@@ -100,11 +100,13 @@
     private bool _loading = true;
     private string _currentRG = "";
     private List<string> _RGs = new List<string>();
+    private int _appCount = 0;
+    private int _loadedCount = 0;
 
     protected override async Task OnInitializedAsync()
     {
-        await ReadWebApps(true);
         await base.OnInitializedAsync();
+        await ReadWebApps(true);
     }
 
     private async Task ReadWebApps(bool initial = false)
@@ -112,6 +114,8 @@
         _loading = true;
         WebApps = new Dictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>>();
         Functions = new Dictionary<string, IDictionary<IWebAppBase, IEnumerable<IWebAppBase>>>();
+
+        _appCount = WebApps.Count + Functions.Count;
 
         var apps = await azure.AppServices.WebApps.ListAsync();
         var list = apps.OrderBy(o => o.Name).ToList();
@@ -123,6 +127,7 @@
                 WebApps[app.ResourceGroupName] = new Dictionary<IWebAppBase, IEnumerable<IWebAppBase>>();
 
             WebApps[app.ResourceGroupName][app] = slots.Cast<IWebAppBase>();
+            _loadedCount++;
         }
 
         var functions = await azure.AppServices.FunctionApps.ListAsync();
@@ -135,6 +140,7 @@
                 Functions[function.ResourceGroupName] = new Dictionary<IWebAppBase, IEnumerable<IWebAppBase>>();
 
             Functions[function.ResourceGroupName][function] = slots.Cast<IWebAppBase>();
+            _loadedCount++;
         }
 
         _RGs = WebApps.Select(o => o.Key).ToList();
