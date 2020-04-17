@@ -19,6 +19,16 @@
                     <a href='@($"http://{host}")' target="_blank">@host</a><br />
                 }
             </p>
+            <p>
+                Webjobs:<br />
+                @foreach (var job in _webjobs)
+                {
+                    @if (job.name != null)
+                    {
+                        <a href='@(job.extra_info_url)' target="_blank">@(job.name)</a><br />
+                    }
+                }
+            </p>
         </div>
     </div>
     <footer class="card-footer">
@@ -125,6 +135,7 @@
 
     private string _appSettings;
     private string _deployments;
+    private IEnumerable<WebJob> _webjobs;
     private string _appLink;
     private string _kuduLink;
     private string _stateClass;
@@ -133,8 +144,20 @@
     private bool _toolsDropdownActive = false;
     private IPublishingProfile _publishingProfile;
 
+    private class WebJob
+    {
+        public WebJob() { }
+
+        public string name { get; set; }
+        public string status { get; set; }
+        public string extra_info_url { get; set; }
+    }
+
     protected override async Task OnParametersSetAsync()
-    {   // Figure out color for the State
+    {
+        _webjobs = new List<WebJob>();
+
+        // Figure out color for the State
         if (App.State == "Running")
             _stateClass = "has-text-success";
         else if (App.State == "Stopped")
@@ -168,6 +191,9 @@
                     Convert.ToBase64String(authToken));
 
             _deployments = await client.GetStringAsync($"{_kuduLink}/api/deployments");
+            _webjobs = JsonSerializer.Deserialize<List<WebJob>>(await client.GetStringAsync($"{_kuduLink}/api/webjobs"));
+            if (_webjobs == null)
+                _webjobs = new List<WebJob>();
         }
 
         _appSettings = JsonSerializer.Serialize(await App.GetAppSettingsAsync(), jsonOptions);
