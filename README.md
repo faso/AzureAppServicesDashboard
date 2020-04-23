@@ -10,10 +10,10 @@
 - [x] Link Kudu
 - [x] Show App Settings and Connection Strings
 - [x] Switch between Resource Groups
-- [ ] Latest deployment info
+- [x] Latest deployment info
 - [x] Link hostnames
 - [x] Restart apps
-- [ ] Auto-refresh in the background
+- [x] Auto-refresh in the background
 - [x] Function App support
 - [ ] Dark mode
 
