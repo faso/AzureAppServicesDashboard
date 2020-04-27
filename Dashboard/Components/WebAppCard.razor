@@ -8,57 +8,119 @@
         <p class="card-header-title">
             @(IsProduction ? "Production" : App.Name)
         </p>
+        <div class="card-header-icon app-state">
+            <span class="@_stateClass">
+                <b>@App.State</b>
+            </span>
+        </div>
     </header>
     <div class="card-content">
         <div class="content">
-            <p>State:<span class="@_stateClass"> <b>@App.State</b></span></p>
-            <p>
-                Hostnames:<br />
-                @foreach (var host in App.HostNames)
-                {
-                    <a href='@($"http://{host}")' target="_blank">@host</a><br />
-                }
-            </p>
-            <p>
-                Webjobs:<br />
-                @foreach (var job in _webjobs)
-                {
-                    @if (job.name != null)
-                    {
-                        <a href='@(job.extra_info_url)' target="_blank">@(job.name)</a><br />
-                    }
-                }
-            </p>
-        </div>
-    </div>
-    <footer class="card-footer">
-        <div class="card-footer-item dropdown @(_toolsDropdownActive ? "is-active" : "")">
-            <div class="dropdown-trigger" @onclick="_ => _toolsDropdownActive = !_toolsDropdownActive">
-                <div aria-haspopup="true" aria-controls="dropdown-menu">
-                    <span>Tools</span>
-                    <span class="tool-icon icon is-small">
-                        <i class="fas fa-angle-down" aria-hidden="true"></i>
-                    </span>
+            <div class="level card-row" @onclick="_ => ToggleHostnames()">
+                <div class="level-left">
+                    <div class="level-item">
+                        <span class="card-section-title">Hostnames</span>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <div class="card-section-button-circle" data-action="collapse" data-target="#chef">
+                            <span class="fa-stack fa-1x">
+                                <i class="fa fa-circle fa-stack-2x" style="color: #D8DCF7"></i>
+                                <i class="fas fa-angle-down fa-stack-1x"></i>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="dropdown-menu" id="dropdown-menu" role="menu" @onblur="_ => _toolsDropdownActive = false">
-                <div class="dropdown-content">
-                    <a href="@_appLink" target="_blank" class="dropdown-item">
+
+            @if (_hostnamesExpanded)
+            {
+                <p>
+                    @foreach (var host in App.HostNames)
+                    {
+                        <a href='@($"http://{host}")' target="_blank">@host</a><br />
+                    }
+                </p>
+            }
+
+            <div class="level card-row" @onclick="_ => ToggleWebjobs()">
+                <div class="level-left">
+                    <div class="level-item">
+                        <span class="card-section-title">WebJobs</span>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <div class="card-section-button-circle" data-action="collapse" data-target="#chef">
+                            <span class="fa-stack fa-1x">
+                                <i class="fa fa-circle fa-stack-2x" style="color: #D8DCF7"></i>
+                                <i class="fas fa-angle-down fa-stack-1x"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (_webjobsExpanded)
+            {
+                @if (_webjobs.Any())
+                {
+                    <p>
+                        @foreach (var job in _webjobs)
+                        {
+                            @if (job.name != null)
+                            {
+                                <a href='@(job.extra_info_url)' target="_blank">@(job.name)</a><br />
+                            }
+                        }
+                    </p>
+                }
+                else
+                {
+                    <p>None</p>
+                }
+            }
+
+            <div class="level card-row" @onclick="_ => ToggleTools()">
+                <div class="level-left">
+                    <div class="level-item">
+                        <span class="card-section-title">Tools</span>
+                    </div>
+                </div>
+                <div class="level-right">
+                    <div class="level-item">
+                        <div class="card-section-button-circle" data-action="collapse" data-target="#chef">
+                            <span class="fa-stack fa-1x">
+                                <i class="fa fa-circle fa-stack-2x" style="color: #D8DCF7"></i>
+                                <i class="fas fa-angle-down fa-stack-1x"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @if (_toolsExpanded)
+            {
+                <p>
+                    <a href="@_appLink" target="_blank">
                         Azure page
-                    </a>
-                    <a href="@_kuduLink" target="_blank" class="dropdown-item">
+                    </a><br />
+                    <a href="@_kuduLink" target="_blank">
                         Kudu
-                    </a>
-                    <a href="#" @onclick="o => { _appSettingsModalActive = true; _toolsDropdownActive = false; }" class="dropdown-item">
+                    </a><br />
+                    <a href="#" @onclick="o => { _appSettingsModalActive = true; _toolsDropdownActive = false; }">
                         AppSettings
-                    </a>
-                    <a href="#" @onclick="o => { _lastDeploymentModalActive = true; _toolsDropdownActive = false; }" class="dropdown-item">
+                    </a><br />
+                    <a href="#" @onclick="o => { _lastDeploymentModalActive = true; _toolsDropdownActive = false; }">
                         Deployments
                     </a>
-                </div>
-            </div>
+                </p>
+            }
         </div>
+    </div>
 
+    <footer class="card-footer">
         @if (App.State == "Stopped")
         {
             <a href="#" class="card-footer-item" @onclick="async _ =>await App.StartAsync()">
@@ -133,6 +195,10 @@
     [Parameter]
     public string ParentName { get; set; }
 
+    private bool _hostnamesExpanded = false;
+    private bool _webjobsExpanded = false;
+    private bool _toolsExpanded = false;
+
     private string _appSettings;
     private string _deployments;
     private IEnumerable<WebJob> _webjobs;
@@ -152,6 +218,15 @@
         public string status { get; set; }
         public string extra_info_url { get; set; }
     }
+
+    private void ToggleHostnames()
+        => _hostnamesExpanded = !_hostnamesExpanded;
+
+    private void ToggleWebjobs()
+        => _webjobsExpanded = !_webjobsExpanded;
+
+    private void ToggleTools()
+        => _toolsExpanded = !_toolsExpanded;
 
     protected override async Task OnParametersSetAsync()
     {

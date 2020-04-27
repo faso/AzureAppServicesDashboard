@@ -48,40 +48,46 @@
 
     @if (!_loading)
     {
-        @foreach (var app in WebApps[_currentRG])
+        @if (WebApps.ContainsKey(_currentRG))
         {
-            <div class="level">
-                <div class="level-left"><img class="app-logo" src="/images/webapp-logo.png"><h1 class="level-item is-size-4">@app.Key.Name</h1></div>
-            </div>
-            <div class="columns">
-                <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
-                    <WebAppCard ParentName="@null" IsProduction="@true" App="@app.Key" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
+            @foreach (var app in WebApps[_currentRG])
+            {
+                <div class="level">
+                    <div class="level-left"><img class="app-logo" src="/images/webapp-logo.png"><h1 class="level-item is-size-4">@app.Key.Name</h1></div>
                 </div>
-                @foreach (var slot in app.Value)
-                {
+                <div class="columns">
                     <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
-                        <WebAppCard ParentName="@app.Key.Name" IsProduction="@false" App="@slot" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
+                        <WebAppCard ParentName="@null" IsProduction="@true" App="@app.Key" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
                     </div>
-                }
-            </div>
+                    @foreach (var slot in app.Value)
+                    {
+                        <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+                            <WebAppCard ParentName="@app.Key.Name" IsProduction="@false" App="@slot" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
+                        </div>
+                    }
+                </div>
+            }
         }
 
-        @foreach (var app in Functions[_currentRG])
+        @if (Functions.ContainsKey(_currentRG))
         {
-            <div class="level">
-                <div class="level-left"><img class="function-logo" src="/images/function-logo.png"><h1 class="level-item is-size-4">@app.Key.Name</h1></div>
-            </div>
-            <div class="columns">
-                <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
-                    <WebAppCard ParentName="@null" IsProduction="@true" App="@app.Key" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
+            @foreach (var app in Functions[_currentRG])
+            {
+                <div class="level">
+                    <div class="level-left"><img class="function-logo" src="/images/function-logo.png"><h1 class="level-item is-size-4">@app.Key.Name</h1></div>
                 </div>
-                @foreach (var slot in app.Value)
-                {
+                <div class="columns">
                     <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
-                        <WebAppCard ParentName="@app.Key.Name" IsProduction="@false" App="@slot" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
+                        <WebAppCard ParentName="@null" IsProduction="@true" App="@app.Key" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
                     </div>
-                }
-            </div>
+                    @foreach (var slot in app.Value)
+                    {
+                        <div class="column is-one-third-desktop is-half-tablet is-full-mobile">
+                            <WebAppCard ParentName="@app.Key.Name" IsProduction="@false" App="@slot" Domain="@domainOptions.Value.Name" Subscription="@domainOptions.Value.Subscription" />
+                        </div>
+                    }
+                </div>
+            }
         }
     }
     else

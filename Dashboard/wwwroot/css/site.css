@@ -1,5 +1,5 @@
 html, body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 16px;
     line-height: 1.5;
     height: 100%;
@@ -142,4 +142,16 @@ h1 {
 
 #dropdown-content {
     z-index: 9999 !important;
+}
+
+.card-section-button-circle {
+    cursor: pointer;
+}
+
+.app-state {
+    padding-right: 1.5rem;
+}
+
+.card-row {
+    margin-bottom: 0.5rem !important;
 }
