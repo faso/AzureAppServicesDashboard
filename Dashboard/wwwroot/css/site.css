@@ -57,6 +57,8 @@ nav.navbar {
     transition: all .5s ease-in-out;
     margin-bottom: 2rem;
     border-radius: 25px;
+    background: rgb(255,255,255);
+    background: linear-gradient(175deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 76%, rgba(247,250,255,1) 100%);
 }
 
     .card:hover {
@@ -123,7 +125,7 @@ nav.navbar {
     width: 30px;
 }
 
-.dropdown-trigger {
+.card-row {
     cursor: pointer;
 }
 
@@ -153,5 +155,21 @@ h1 {
 }
 
 .card-row {
-    margin-bottom: 0.5rem !important;
+    margin-bottom: 0.35rem !important;
+}
+
+.card-row-content {
+    margin-left: 0.5rem;
+}
+
+.card-section-title {
+    font-size: 16px;
+}
+
+.app-operation-icon {
+    color: #061058;
+}
+
+.card-footer-item:hover {
+    background: #f7faff;
 }
