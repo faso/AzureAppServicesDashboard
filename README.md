@@ -9,7 +9,11 @@ First, gather your connection info so the dashboard can see your Azure resources
 [Create a Service Principal for your app with the Contributor role](https://docs.microsoft.com/en-us/azure/active-directory/develop/howto-create-service-principal-portal)
 
 You will need your tenant ID, subscription ID, AD domain name, app registration client ID and secret
-Now, you can either run it using Docker with a prebuilt image, build your own Docker image or build the app from source
+
+Now, you can choose one of the following methods: 
+- run it using Docker from a prebuilt image
+- build your own Docker image 
+- build the app from source
 
 ## Running using Docker
 
