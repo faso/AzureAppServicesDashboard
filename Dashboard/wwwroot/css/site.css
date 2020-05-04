@@ -6,11 +6,6 @@ html, body {
     background: #F7FAFF;
 }
 
-nav.navbar {
-    border-top: 4px solid #276cda;
-    margin-bottom: 1rem;
-}
-
 .navbar-item.brand-text {
     font-weight: 300;
     font-size: 2rem;
@@ -172,4 +167,13 @@ h1 {
 
 .card-footer-item:hover {
     background: #f7faff;
+}
+
+.navbar.is-white {
+    border-radius: 20px;
+}
+
+.navbar {
+    border: 2px solid #276cda;
+    margin: 20px;
 }
