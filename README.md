@@ -64,3 +64,4 @@ Prerequisites: .NET Core 3.1 SDK
 - [x] Auto-refresh in the background
 - [x] Function App support
 - [ ] Dark mode
+- [ ] Faster and more responsive loading
